@@ -1,0 +1,40 @@
+{
+	"name": "taskr-imagemin",
+	"version": "0.0.0",
+	"description": "Minify images with Imagemin in Taskr",
+	"repository": "https://github.com/admakiss/taskr-imagemin",
+	"main": "index.js",
+	"license": "MIT",
+	"files": [
+		"index.js"
+	],
+	"keywords":[
+		"taskr",
+		"taskr-plugin",
+		"taskr-imagemin"
+	],
+	"scripts": {
+		"test": "xo && ava test"
+	},
+	"author": {
+		"name": "taskr-imagemin",
+		"email": "iamadamkiss+npm@gmail.com",
+		"url": "https://adamkiss.com"
+	},
+	"devDependencies": {
+		"ava": "^0.23.0",
+		"@taskr/clear": "^1.1.0",
+		"taskr": "^1.1.0",
+		"xo": "*"
+	},
+	"engines": {
+		"node": ">= 4.6"
+	},
+	"xo": {
+		"rules": {
+			"generator-star-spacing": 0,
+			"capitalized-comments": 0,
+			"require-yield": 0
+		}
+	}
+}

@@ -1,0 +1,12 @@
+sudo: false
+language: node_js
+node_js:
+- 4
+- 6
+- 8
+notifications:
+  email: false
+  pushover:
+    on_success: always
+    on_failure: always
+    template: "%{repository_name} %{branch}#%{build_number}\n%{message}\nDetails: %{build_url}"
