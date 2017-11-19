@@ -9,4 +9,11 @@ notifications:
   pushover:
     on_success: always
     on_failure: always
-    template: "%{repository_name} %{branch}#%{build_number}\n%{message}\nDetails: %{build_url}"
+    template: |-
+      %{repository_name} %{branch}#%{build_number}
+      %{message}
+      Details: %{build_url}
+    api_key:
+      secure: lNumVj9MWb/JKsW8JGrjP/avJ8VYZ7CJdfmK+8ZpitSL8mrbfMPlcfLJbRBdU8KfinkCkCca1GBfRX2jNLLVV3u/7p5wWfpVZ/66ig9VF1TuZCn+7bdLn+Bi1qBDdRPxInU0m1DHmoQiIg4ruUNz71I3zYZRvl900WGdM9+S13BalRbVrnllYpha2B8eHVqFlbwf9cqPAKvfDlIyul8RaOlIVFxlx68tNSWRncaH0MWTl+r/T2j6NvxIv+xH3+upKiWNKX2E4PQCL3iZzI0jfJwPnZKd05i3LW/yz5a62/2MUcJeBeNssjllblFPI7B4M5I4QJP3ChLZRZa6MqO6EaljJOn5q/om0+s/XF6g70ckC8ki7YhVn8A4wmm2wBddpv12V2qD+zbxgEKkbAEQTuvVFlWZj+tshIo1KrN6PclQt8a9K44Ki2V69IqdnHKVrhs/9ux8uyyHFdPebvJs/hJuZiAuVdWHWpYIZmhmwmvvaXNDbs8bFD+enxQTmEMTAjAS/HGKAGOAMinDcCs4Dmf5vdX/ULMsks8jnwve/6GFtnur9b4YGQw9DS/Tg70hQ8S9fCKmc/sHNJSk6CyQKfAq1C51FZRIQDl31w1+zGyyiy0BBynP3bMDBpWyFYwTGWxZNRX7WWJNLZckTFWOPoOiTeCiP/h+CPplP6GLgnw=
+    users:
+      secure: 4an+RiHcTD6deQljGNPoSZXU5rXDv49H1UDmQYStmGVhLfgLxpuq5flHIfZ3FubhXc7BPYdtvKSlz+su5r8OwqwH67yP/LbSEYq81Tcucn76DzgRy2ZBgvuI1mENi6KDC4dqFAKV89yn0kgADVHMVCyQV7FC8OGnzzeYcZvC4RzdCa7X+SGNvsrDTlKWAQPC7cGgIeEtuDLYJbf8BdZo/iTw9oklHiW5B9hdUm2qVb3Vv5JVVT4ObWM9cDo5NPRIAkW1aoIvUejEcl4NzdNWRWujIU+e8SwjTzQEAgJIQmnyhjEW/wtcEPxPeCyEsimauf2BfL1w3+y+ZYOl1zXyGUf0mPlL0R4kE1pHSpyT4VxLLGnwFfOCxlY5vcqDIdrih+j0IuvacP51q7uR1fiTu1LUjKj7u+VCZMFtoyAhuWvn5wa/Q/gSHlrHC6//hCm47BGzz/ZeoHE2hwB54cR3wWE+Lpee20hO5ULrtQPEiR5YcaDqEVYdAt141N4OXgi+G3un7abkNP8mF+CDhGuxTGDKpU19eZsezonhtDjKRv9oK5gZqWNVVMUdiRmNs5aAkep/APvXkvu8iCs826ZkJvehrcN4LiVlKDC0FRAa+gcloupYCrimK4BsQ+FpoQQJh/UQLz41Oc82B7/qWxxuRvaWHg/lfQ4DLGVTMwH14XE=
