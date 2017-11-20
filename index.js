@@ -25,8 +25,6 @@ module.exports = function (task) {
 		}, [])
 
 	task.plugin('imagemin', {}, function * (file, pluginConfig) {
-		warn('.')
-
 		if (isEmptyObj(pluginConfig)) {
 			pluginConfig = getDefaultPlugins()
 		}
