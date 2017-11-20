@@ -1,6 +1,6 @@
 {
 	"name": "taskr-imagemin",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "Minify images with Imagemin in Taskr",
 	"repository": "https://github.com/admakiss/taskr-imagemin",
 	"main": "index.js",
@@ -8,13 +8,14 @@
 	"files": [
 		"index.js"
 	],
-	"keywords":[
+	"keywords": [
 		"taskr",
 		"taskr-plugin",
 		"taskr-imagemin"
 	],
 	"scripts": {
-		"test": "xo && ava test"
+		"test": "xo && ava test",
+    "ava": "ava test"
 	},
 	"author": {
 		"name": "taskr-imagemin",
@@ -22,19 +23,32 @@
 		"url": "https://adamkiss.com"
 	},
 	"devDependencies": {
-		"ava": "^0.23.0",
 		"@taskr/clear": "^1.1.0",
+		"ava": "^0.23.0",
 		"taskr": "^1.1.0",
 		"xo": "*"
 	},
 	"engines": {
 		"node": ">= 4.6"
 	},
-	"xo": {
-		"rules": {
-			"generator-star-spacing": 0,
-			"capitalized-comments": 0,
-			"require-yield": 0
-		}
+  "xo": {
+    "ignores": ["index-customloop.js"],
+    "rules": {
+      "semi": 0,
+      "generator-star-spacing": 0,
+      "capitalized-comments": 0,
+      "require-yield": 0
+    }
+  },
+	"dependencies": {
+		"imagemin": "^5.3.1",
+		"plur": "^2.1.2",
+		"pretty-bytes": "^4.0.2"
+	},
+	"optionalDependencies": {
+		"imagemin-gifsicle": "^5.2.0",
+		"imagemin-jpegtran": "^5.0.2",
+		"imagemin-optipng": "^5.2.1",
+		"imagemin-svgo": "^6.0.0"
 	}
 }
