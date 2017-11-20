@@ -24,9 +24,11 @@ module.exports = function (task) {
 			}
 		}, [])
 
+	const loadedDefaultPlugins = getDefaultPlugins()
+
 	task.plugin('imagemin', {}, function * (file, pluginConfig) {
 		if (isEmptyObj(pluginConfig)) {
-			pluginConfig = getDefaultPlugins()
+			pluginConfig = loadedDefaultPlugins
 		}
 
 		if (!Array.isArray(pluginConfig)) {
@@ -38,7 +40,7 @@ module.exports = function (task) {
 		}
 
 		try {
-			const use = pluginConfig || getDefaultPlugins()
+			const use = pluginConfig || loadedDefaultPlugins()
 			file.data = yield imagemin.buffer(file.data, {use})
 		} catch (err) {
 			return error(err.message)
