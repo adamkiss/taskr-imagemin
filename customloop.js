@@ -67,8 +67,6 @@ module.exports = function (task) {
 				file.data = yield imagemin.buffer(file.data, {use})
 				files[index] = file
 
-				console.log(file.data.length)
-
 				const optimizedSize = file.data.length
 				const saved = originalSize - optimizedSize
 				const percent = originalSize > 0 ? saved / originalSize * 100 : 0
