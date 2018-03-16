@@ -17,6 +17,38 @@ const validExts = ['.jpg', '.jpeg', '.png', '.gif', '.svg']
 
 const VERBOSE = process.env.VERBOSE
 
+const stats = {
+	bytes: 0,
+	savedBytes: 0,
+	filesOptimised: 0,
+	filesTotal: 0
+}
+
+function imageminPromise(use, file, stats, error) {
+	try {
+		const originalSize = file.data.length
+		console.log(file.dir)
+		return imagemin
+			.buffer(file.data, {use})
+			.then(data => {
+				const optimizedSize = data.length
+				const saved = originalSize - optimizedSize
+				// const percent = originalSize > 0 ? saved / originalSize * 100 : 0
+
+				stats.filesTotal++
+				if (saved > 0) {
+					stats.bytes += originalSize
+					stats.savedBytes += saved
+					stats.filesOptimised++
+				}
+
+				return Object.assign(file, {data, _imagemin: true})
+			})
+	} catch (err) {
+		return error(err.message)
+	}
+}
+
 module.exports = function (task) {
 	const log = (str, p) => task.emit('plugin_log', {error: str, plugin: p || PLUGIN_NAME})
 	const warn = (str, p) => task.emit('plugin_warning', {warning: str, plugin: p || PLUGIN_NAME})
@@ -32,10 +64,6 @@ module.exports = function (task) {
 				return plugins
 			}
 		}, [])
-
-	let totalBytes = 0
-	let totalSavedBytes = 0
-	let totalFiles = 0
 
 	task.plugin('imagemin', {every: false}, function * (files, plugins, options) {
 		if (!Array.isArray(plugins) || plugins.length === 0) {
@@ -54,49 +82,28 @@ module.exports = function (task) {
 		const use = plugins || getDefaultPlugins()
 		const opts = Object.assign({}, {skip: f => false}, options)
 
+		const skippedFiles = []
+		const promises = []
 		let index = files.length
 		while (index--) {
 			const file = files[index]
-			if (validExts.indexOf(extname(file.base).toLowerCase()) === -1) {
-				warn(`Skipping unsupported image ${file.base}`)
-				continue
-			}
-			if (opts.skip(file)){
-				warn(`Skipping file due to opts.skip()`)
-				continue
-			}
 
-			try {
-				const originalSize = file.data.length
-
-				file.data = yield imagemin.buffer(file.data, {use})
-				files[index] = file
-
-				const optimizedSize = file.data.length
-				const saved = originalSize - optimizedSize
-				const percent = originalSize > 0 ? saved / originalSize * 100 : 0
-
-				if (VERBOSE >= 2) {
-					const savedMsg = `saved ${prettyBytes(saved)} - ${percent.toFixed(1).replace(/\.0$/, '')}%`
-					const msg = saved > 0 ? savedMsg : 'already optimized'
-					log(`✔ ${file.base}: ${msg}`)
-				}
-
-				if (saved > 0) {
-					totalBytes += originalSize
-					totalSavedBytes += saved
-					totalFiles++
-				}
-			} catch (err) {
-				return error(err.message)
+			if (validExts.indexOf(extname(file.base).toLowerCase()) === -1 || opts.skip(file)) {
+				log(`Skipping file ${file.base}`)
+				skippedFiles.push(file)
+			} else {
+				promises.push(imageminPromise(use, file, stats, error))
 			}
 		}
 
-		const percent = totalBytes > 0 ? (totalSavedBytes / totalBytes) * 100 : 0
-		let msg = `Minified ${totalFiles} ${plur('image', totalFiles)}`;
+		const promiseFiles = yield Promise.all(promises)
+		this._.files = skippedFiles.concat(promiseFiles)
 
-		if (totalFiles > 0) {
-			msg += ` (saved ${prettyBytes(totalSavedBytes)} - ${percent.toFixed(1).replace(/\.0$/, '')}%)`;
+		const percent = stats.bytes > 0 ? (stats.savedBytes / stats.bytes) * 100 : 0
+		let msg = `Minified ${stats.filesOptimised} ${plur('image', stats.filesOptimised)} out of ${stats.filesTotal}`;
+
+		if (stats.filesOptimised > 0) {
+			msg += ` (saved ${prettyBytes(stats.savedBytes)} - ${percent.toFixed(1).replace(/\.0$/, '')}%)`;
 		}
 
 		warn(msg)
