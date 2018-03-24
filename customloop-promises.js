@@ -9,8 +9,6 @@ const imagemin = require('imagemin')
 const prettyBytes = require('pretty-bytes')
 const plur = require('plur')
 
-const {isEmptyObj} = require('taskr/lib/fn')
-
 const PLUGIN_NAME = 'imagemin'
 const defaultPlugins = ['gifsicle', 'jpegtran', 'optipng', 'svgo']
 const validExts = ['.jpg', '.jpeg', '.png', '.gif', '.svg']
@@ -27,7 +25,6 @@ const stats = {
 function imageminPromise(use, file, stats, error) {
 	try {
 		const originalSize = file.data.length
-		console.log(file.dir)
 		return imagemin
 			.buffer(file.data, {use})
 			.then(data => {
@@ -65,22 +62,14 @@ module.exports = function (task) {
 			}
 		}, [])
 
-	task.plugin('imagemin', {every: false}, function * (files, plugins, options) {
-		if (!Array.isArray(plugins) || plugins.length === 0) {
-			warn('Usage: imagemin([plugins]), plugins should be an array. Ignoring…')
-			plugins = getDefaultPlugins()
+	task.plugin('imagemin', {every: false}, function * (files, config) {
+		if (!('plugins' in config) || (!Array.isArray(config.plugins) || config.plugins.length === 0)) {
+			// warn('Usage: imagemin({plugins: [plugins]}), plugins should be an array. Ignoring…')
+			config.plugins = getDefaultPlugins()
 		}
 
-		if (isEmptyObj(plugins)) {
-			plugins = getDefaultPlugins()
-		}
-
-		if (!Array.isArray(plugins)) {
-			return warn('Usage: imagemin([plugins]), plugins should be an array. Ignoring…')
-		}
-
-		const use = plugins || getDefaultPlugins()
-		const opts = Object.assign({}, {skip: f => false}, options)
+		config = Object.assign({}, {skip: () => false}, config)
+		const use = config.plugins || getDefaultPlugins()
 
 		const skippedFiles = []
 		const promises = []
@@ -88,7 +77,7 @@ module.exports = function (task) {
 		while (index--) {
 			const file = files[index]
 
-			if (validExts.indexOf(extname(file.base).toLowerCase()) === -1 || opts.skip(file)) {
+			if (validExts.indexOf(extname(file.base).toLowerCase()) === -1 || config.skip(file)) {
 				log(`Skipping file ${file.base}`)
 				skippedFiles.push(file)
 			} else {
