@@ -71,7 +71,7 @@ module.exports = function (task) {
 				const saved = originalSize - optimizedSize
 				const percent = originalSize > 0 ? saved / originalSize * 100 : 0
 
-				if (VERBOSE >= 2) {
+				if (true) {
 					const savedMsg = `saved ${prettyBytes(saved)} - ${percent.toFixed(1).replace(/\.0$/, '')}%`
 					const msg = saved > 0 ? savedMsg : 'already optimized'
 					warn(`✔ ${file.base}: ${msg}`)
