@@ -26,21 +26,20 @@ module.exports = function (task) {
 
 	const loadedDefaultPlugins = getDefaultPlugins()
 
-	task.plugin('imagemin', {}, function * (file, pluginConfig) {
-		if (isEmptyObj(pluginConfig)) {
-			pluginConfig = loadedDefaultPlugins
+	task.plugin('imagemin', {}, function * (file, config) {
+		if (!('plugins' in config) || (!Array.isArray(config.plugins) || config.plugins.length === 0)) {
+			// warn('Usage: imagemin({plugins: [plugins]}), plugins should be an array. Ignoring…')
+			config.plugins = getDefaultPlugins()
 		}
 
-		if (!Array.isArray(pluginConfig)) {
-			return warn('Usage: imagemin([plugins]), plugins should be an array. Ignoring…')
-		}
+		config = Object.assign({}, {skip: () => false}, config)
 
-		if (validExts.indexOf(extname(file.base).toLowerCase()) === -1) {
+		if (validExts.indexOf(extname(file.base).toLowerCase()) === -1 || config.skip(file)) {
 			return log(`Skipping unsupported image ${file.base}`)
 		}
 
 		try {
-			const use = pluginConfig || loadedDefaultPlugins()
+			const use = config.plugins || loadedDefaultPlugins()
 			file.data = yield imagemin.buffer(file.data, {use})
 		} catch (err) {
 			return error(err.message)

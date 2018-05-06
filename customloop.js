@@ -37,7 +37,7 @@ module.exports = function (task) {
 	let totalSavedBytes = 0
 	let totalFiles = 0
 
-	task.plugin('imagemin', {every: false}, function * (files, plugins) {
+	task.plugin('imagemin', {every: false}, function * (files, plugins, options) {
 		if (!Array.isArray(plugins) || plugins.length === 0) {
 			warn('Usage: imagemin([plugins]), plugins should be an array. Ignoring…')
 			plugins = getDefaultPlugins()
@@ -52,12 +52,17 @@ module.exports = function (task) {
 		}
 
 		const use = plugins || getDefaultPlugins()
+		const opts = Object.assign({}, {skip: f => false}, options)
 
 		let index = files.length
 		while (index--) {
 			const file = files[index]
 			if (validExts.indexOf(extname(file.base).toLowerCase()) === -1) {
 				warn(`Skipping unsupported image ${file.base}`)
+				continue
+			}
+			if (opts.skip(file)){
+				warn(`Skipping file due to opts.skip()`)
 				continue
 			}
 
@@ -74,7 +79,7 @@ module.exports = function (task) {
 				if (true) {
 					const savedMsg = `saved ${prettyBytes(saved)} - ${percent.toFixed(1).replace(/\.0$/, '')}%`
 					const msg = saved > 0 ? savedMsg : 'already optimized'
-					warn(`✔ ${file.base}: ${msg}`)
+					log(`✔ ${file.base}: ${msg}`)
 				}
 
 				if (saved > 0) {
